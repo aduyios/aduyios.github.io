@@ -17,7 +17,6 @@ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 body{
 overflow-x:hidden;
 background:linear-gradient(to bottom,#dbe7ff,#a9c3f5);
-color:#111;
 }
 
 /* HEADER */
@@ -107,6 +106,14 @@ color:white;
 box-shadow:0 12px 25px rgba(0,0,0,0.2);
 }
 
+.icon-img{
+width:70px;
+height:70px;
+border-radius:22px;
+object-fit:cover;
+box-shadow:0 12px 25px rgba(0,0,0,0.2);
+}
+
 .text-title{
 font-size:20px;
 font-weight:700;
@@ -119,8 +126,13 @@ margin-top:5px;
 }
 
 .download{
-font-size:30px;
-color:#3d6ed6;
+font-size:16px;
+color:#007aff;
+background:#e6f0ff;
+padding:8px 18px;
+border-radius:20px;
+font-weight:600;
+cursor:pointer;
 }
 
 /* SNOW */
@@ -161,25 +173,16 @@ to{transform:translateY(110vh)}
 </div>
 
 <div class="section-title">Tải Game</div>
-
 <div id="gameList"></div>
 
-<div class="section-title">Tải Ứng Dụng</div>
-
-<div class="item">
-<div class="left">
-<div class="icon">📲</div>
-<div>
-<div class="text-title">Utility App</div>
-<div class="text-sub">Bản cập nhật</div>
-</div>
-</div>
-<div class="download">⬇️</div>
-</div>
+<div class="section-title">Ứng Dụng</div>
+<div id="realApps"></div>
 
 <div class="snow" id="snow"></div>
 
 <script>
+
+/* 40 GAME */
 const games=[
 "Battle Arena","Ninja Hero","Shadow Fight","Dragon War",
 "Zombie Rush","Speed Racer","Sniper Elite",
@@ -200,10 +203,10 @@ const games=[
 "Wild Hunter","Ultimate Arena"
 ];
 
-const container=document.getElementById("gameList");
+const gameContainer=document.getElementById("gameList");
 
 games.forEach(name=>{
-container.innerHTML+=`
+gameContainer.innerHTML+=`
 <div class="item">
 <div class="left">
 <div class="icon">🎮</div>
@@ -212,11 +215,50 @@ container.innerHTML+=`
 <div class="text-sub">Cập nhật hôm nay</div>
 </div>
 </div>
-<div class="download">⬇️</div>
+<div class="download">Tải</div>
 </div>`;
 });
 
-/* Snow */
+
+/* 10 APP THẬT - LẤY ICON QUA ITUNES API */
+const realAppNames=[
+"Clash Royale",
+"Subway Surfers",
+"Minecraft",
+"Among Us",
+"Royal Match",
+"Homescapes",
+"Call of Duty Mobile",
+"PUBG Mobile",
+"Brawl Stars",
+"Genshin Impact"
+];
+
+const appContainer=document.getElementById("realApps");
+
+realAppNames.forEach(name=>{
+fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(name)}&entity=software&limit=1`)
+.then(res=>res.json())
+.then(data=>{
+if(data.results.length>0){
+const app=data.results[0];
+appContainer.innerHTML+=`
+<div class="item">
+<div class="left">
+<img src="${app.artworkUrl512}" class="icon-img">
+<div>
+<div class="text-title">${app.trackName}</div>
+<div class="text-sub">${app.primaryGenreName}</div>
+</div>
+</div>
+<div class="download" onclick="window.open('${app.trackViewUrl}','_blank')">Nhận</div>
+</div>`;
+}
+});
+});
+
+
+/* SNOW */
 for(let i=0;i<60;i++){
 let s=document.createElement("div");
 s.className="snowflake";
@@ -226,6 +268,7 @@ s.style.animationDuration=5+Math.random()*5+"s";
 s.style.fontSize=10+Math.random()*20+"px";
 document.getElementById("snow").appendChild(s);
 }
+
 </script>
 
 </body>
