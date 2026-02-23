@@ -2,13 +2,12 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0,
 maximum-scale=1.0, minimum-scale=1.0,
-user-scalable=no, viewport-fit=cover">
+user-scalable=no">
 
-<title>DUY IOS 40 APP</title>
+<title>DUY IOS PRO</title>
 
 <style>
 *{
@@ -16,23 +15,23 @@ margin:0;
 padding:0;
 box-sizing:border-box;
 font-family:-apple-system,BlinkMacSystemFont,sans-serif;
--webkit-tap-highlight-color: transparent;
+-webkit-tap-highlight-color:transparent;
 }
 
 html,body{
 height:100%;
 overflow:hidden;
-touch-action:manipulation;
-background:linear-gradient(180deg,#1e3c72,#2a5298);
+background:#000;
 color:white;
 }
 
+/* Rainbow border */
 #rainbow{
 position:fixed;
 inset:0;
-pointer-events:none;
 border:6px solid;
-border-image:linear-gradient(45deg,red,orange,yellow,green,blue,indigo,violet) 1;
+border-image:linear-gradient(45deg,red,orange,yellow,green,blue,purple) 1;
+pointer-events:none;
 animation:hue 6s linear infinite;
 }
 @keyframes hue{
@@ -40,12 +39,13 @@ animation:hue 6s linear infinite;
 100%{filter:hue-rotate(360deg)}
 }
 
+/* Snow */
 #snow{
 position:fixed;
 inset:0;
 pointer-events:none;
 }
-.snowflake{
+.snow{
 position:absolute;
 color:white;
 animation:fall linear infinite;
@@ -54,51 +54,93 @@ animation:fall linear infinite;
 to{transform:translateY(110vh)}
 }
 
+/* Screen */
 .screen{
 display:none;
 height:100%;
 width:100%;
 padding:20px;
-text-align:center;
 overflow:auto;
 }
-.active{
-display:block;
+.active{display:block}
+
+/* LOCK */
+.lock{
+display:flex;
+flex-direction:column;
+align-items:center;
+margin-top:80px;
 }
 
-input{
-padding:12px;
-border-radius:12px;
-border:none;
-font-size:16px;
-width:200px;
-text-align:center;
+.dots{
+display:flex;
+gap:10px;
+margin:20px 0;
+}
+.dot{
+width:14px;
+height:14px;
+border:2px solid white;
+border-radius:50%;
+}
+.dot.fill{
+background:white;
 }
 
-button{
-margin-top:10px;
-padding:10px 20px;
-border:none;
-border-radius:12px;
-background:#007aff;
-color:white;
-font-size:14px;
+.keypad{
+display:grid;
+grid-template-columns:repeat(3,80px);
+gap:15px;
+justify-content:center;
+}
+.key{
+background:#1c1c1e;
+padding:20px;
+border-radius:50%;
+font-size:20px;
+}
+
+/* HOME */
+.anime{
+position:fixed;
+inset:0;
+background:url('https://images.alphacoders.com/131/1314071.jpg') center/cover;
+opacity:0.4;
+z-index:-1;
+}
+
+.tabs{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+overflow-x:auto;
+}
+.tab{
+padding:8px 15px;
+background:#1c1c1e;
+border-radius:20px;
+font-size:13px;
+white-space:nowrap;
 }
 
 .grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:14px;
-margin-top:20px;
+gap:15px;
 }
 
 .app{
-background:white;
-color:black;
+background:linear-gradient(145deg,#2c2c2e,#1c1c1e);
 padding:15px 5px;
-border-radius:20px;
-font-size:12px;
-box-shadow:0 4px 10px rgba(0,0,0,0.2);
+border-radius:22px;
+text-align:center;
+font-size:11px;
+box-shadow:0 6px 15px rgba(0,0,0,0.6);
+}
+
+.icon{
+font-size:24px;
+margin-bottom:5px;
 }
 
 #back{
@@ -107,6 +149,9 @@ bottom:20px;
 left:50%;
 transform:translateX(-50%);
 display:none;
+background:#007aff;
+padding:10px 20px;
+border-radius:20px;
 }
 </style>
 </head>
@@ -117,84 +162,122 @@ display:none;
 
 <!-- LOCK -->
 <div id="lock" class="screen active">
-<h2>🔐 Nhập mật khẩu</h2>
-<br>
-<input type="password" id="pass" maxlength="6">
-<br>
-<button onclick="unlock()">Mở khóa</button>
-<p id="msg"></p>
+<div class="lock">
+<h2>Nhập mật mã</h2>
+<div class="dots" id="dots"></div>
+<div class="keypad" id="keys"></div>
+</div>
 </div>
 
 <!-- HOME -->
 <div id="home" class="screen">
-<h2>Xin chào Duy 👑</h2>
+<div class="anime"></div>
+<h2>Duy IOS 👑</h2>
+
+<div class="tabs">
+<div class="tab">Hành động</div>
+<div class="tab">Thú vị</div>
+<div class="tab">Giải trí</div>
+<div class="tab">Công cụ</div>
+</div>
+
 <div class="grid" id="apps"></div>
 </div>
 
 <!-- APP -->
 <div id="appScreen" class="screen">
 <h2 id="appTitle"></h2>
-<p id="appText">App đang hoạt động...</p>
+<p>Đang chạy ứng dụng...</p>
 </div>
 
-<button id="back" onclick="goHome()">⬅️ Quay lại</button>
+<div id="back" onclick="goHome()">⬅️ Quay lại</div>
 
 <script>
 
-/* CHẶN DOUBLE TAP ZOOM */
-let lastTouchEnd = 0;
-document.addEventListener('touchend', function (event) {
-const now = new Date().getTime();
-if (now - lastTouchEnd <= 300) {
-event.preventDefault();
-}
-lastTouchEnd = now;
-}, false);
-
-document.addEventListener('gesturestart', function (e) {
-e.preventDefault();
+/* CHẶN ZOOM */
+document.addEventListener('gesturestart', e=>e.preventDefault());
+let last=0;
+document.addEventListener('touchend',e=>{
+let now=new Date().getTime();
+if(now-last<=300)e.preventDefault();
+last=now;
 });
 
-/* TUYẾT */
-function snow(){
+/* SNOW */
 for(let i=0;i<50;i++){
 let s=document.createElement("div");
-s.className="snowflake";
+s.className="snow";
 s.innerHTML="❄";
 s.style.left=Math.random()*100+"vw";
-s.style.fontSize=10+Math.random()*20+"px";
 s.style.animationDuration=4+Math.random()*6+"s";
+s.style.fontSize=10+Math.random()*20+"px";
 document.getElementById("snow").appendChild(s);
 }
-}
-snow();
 
-/* PASSWORD */
-function unlock(){
-if(document.getElementById("pass").value==="888888"){
+/* PASSCODE */
+let pass="";
+const correct="888888";
+const dots=document.getElementById("dots");
+for(let i=0;i<6;i++){
+let d=document.createElement("div");
+d.className="dot";
+dots.appendChild(d);
+}
+function updateDots(){
+[...dots.children].forEach((d,i)=>{
+d.classList.toggle("fill",i<pass.length);
+});
+}
+function press(num){
+if(pass.length<6){
+pass+=num;
+updateDots();
+if(pass.length===6){
+if(pass===correct){
 document.getElementById("lock").classList.remove("active");
 document.getElementById("home").classList.add("active");
 }else{
-document.getElementById("msg").innerText="Sai mật khẩu!";
+pass="";
+updateDots();
 }
+}
+}
+}
+for(let i=1;i<=9;i++){
+let k=document.createElement("div");
+k.className="key";
+k.innerText=i;
+k.onclick=()=>press(i);
+document.getElementById("keys").appendChild(k);
 }
 
-/* TẠO 40 APP */
+/* 40 APPS */
+const names=[
+"🔥 Battle Zone","⚔️ Ninja Fight","🎯 Sniper Pro","🚗 Speed Rush",
+"🎲 Lucky Spin","😂 Meme Hub","🎵 Music Chill","📸 Camera Pro",
+"🎮 Arcade X","🧠 Brain Game","🏀 Street Ball","👻 Horror Night",
+"🌎 Explore World","🎤 Voice Fun","🎨 Art Lab","📱 Tool Box",
+"💬 Chat Pro","📺 Movie Time","📡 Radar Scan","🧩 Puzzle King",
+"🛡️ Defense War","🕹️ Retro Game","🎧 DJ Mix","🗺️ Map 3D",
+"📖 Story Fun","🎁 Surprise Box","⚡ Power App","💡 Smart Tool",
+"🎮 Arena X","🚀 Space War","🧟 Zombie Run","🎲 Dice Game",
+"🎭 Fun Mask","📷 Snap Pro","🎵 Beat Maker","📊 Stat Tool",
+"🧠 IQ Test","🛠️ Fix Tool","🎥 Clip Maker","🎯 Target Hit"
+];
+
 const apps=document.getElementById("apps");
-
-for(let i=1;i<=40;i++){
+names.forEach(n=>{
 let a=document.createElement("div");
 a.className="app";
-a.innerText="App "+i;
-a.onclick=()=>openApp("App "+i);
+a.innerHTML="<div class='icon'>"+n.split(" ")[0]+"</div>"+n;
+a.onclick=()=>openApp(n);
 apps.appendChild(a);
-}
+});
 
-function openApp(name){
+function openApp(n){
 document.getElementById("home").classList.remove("active");
 document.getElementById("appScreen").classList.add("active");
-document.getElementById("appTitle").innerText=name;
-document.getElementById("appText").innerText="Bạn đang mở "+name;
+document.getElementById("appTitle").innerText=n;
 document.getElementById("back").style.display="block";
 }
 
