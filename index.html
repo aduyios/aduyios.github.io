@@ -3,533 +3,195 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anh Duy iOS 10.15 OMEGA</title>
-
+<title>DUY IOS ULTIMATE ∞</title>
 <style>
-:root{
---primary:#007aff;
---blur: blur(20px);
-}
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:-apple-system,BlinkMacSystemFont;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
 body{
-height:100vh;
+background:linear-gradient(180deg,#ffffff,#cce6ff);
 overflow:hidden;
-background:black;
-color:white;
+height:100vh;
+color:#000;
 }
-
-/* ===== BOOT SCREEN ===== */
-#boot{
+#rainbowBorder{
 position:fixed;
-inset:0;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-background:black;
-z-index:9999;
-animation:bootFade 2.5s forwards;
-}
-
-@keyframes bootFade{
-0%{opacity:1}
-80%{opacity:1}
-100%{opacity:0;visibility:hidden}
-}
-
-.boot-logo{
-font-size:28px;
-letter-spacing:2px;
-animation:pulse 1.5s infinite;
-}
-
-@keyframes pulse{
-0%{opacity:0.3}
-50%{opacity:1}
-100%{opacity:0.3}
-}
-
-/* ===== RAINBOW BORDER ===== */
-body::before{
-content:"";
-position:fixed;
-inset:0;
-padding:3px;
-background:linear-gradient(90deg,#ff0000,#ff9900,#ffff00,#00ff00,#00ffff,#0000ff,#ff00ff,#ff0000);
-background-size:400%;
-animation:borderMove 6s linear infinite;
--webkit-mask:
-linear-gradient(#000 0 0) content-box,
-linear-gradient(#000 0 0);
--webkit-mask-composite:xor;
-mask-composite:exclude;
+top:0;left:0;width:100%;height:100%;
 pointer-events:none;
+border:6px solid;
+border-image:linear-gradient(45deg,red,orange,yellow,green,blue,indigo,violet) 1;
+animation:borderMove 5s linear infinite;
 }
-
 @keyframes borderMove{
-0%{background-position:0%}
-100%{background-position:400%}
+0%{filter:hue-rotate(0deg)}
+100%{filter:hue-rotate(360deg)}
 }
-
-/* ===== LOCKSCREEN ===== */
-#lock{
-position:fixed;
-inset:0;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-background-size:cover;
-background-position:center;
-transition:0.6s;
-}
-
-#lock.blur{
-backdrop-filter:var(--blur);
-}
-
-.pin-grid{
-display:grid;
-grid-template-columns:repeat(3,80px);
-gap:15px;
-margin-top:20px;
-}
-
-.pin-btn{
-height:80px;
-border-radius:50%;
-border:none;
-background:rgba(255,255,255,0.2);
-color:white;
-font-size:22px;
-backdrop-filter:var(--blur);
-}
-
-.pin-btn:active{
-transform:scale(0.9);
-}
-
-#dots{
-font-size:30px;
-letter-spacing:12px;
-margin-top:15px;
-}
-
-/* ===== STATUS BAR ===== */
-.status{
+#snow{position:fixed;width:100%;height:100%;pointer-events:none}
+.snowflake{
 position:absolute;
-top:0;
-left:0;
-width:100%;
-display:flex;
-justify-content:space-between;
-padding:5px 15px;
-font-size:14px;
-font-weight:600;
-backdrop-filter:var(--blur);
-}
-
-/* ===== SNOW ENGINE ===== */
-.snow{
-position:fixed;
 top:-10px;
-width:5px;
-height:5px;
-background:white;
-border-radius:50%;
-opacity:0.8;
+color:white;
 animation:fall linear infinite;
 }
-
 @keyframes fall{
-to{transform:translateY(110vh);}
+to{transform:translateY(100vh)}
 }
-
-/* ===== FACE ID FAKE ===== */
-#faceID{
-position:absolute;
-bottom:120px;
-font-size:14px;
-opacity:0.7;
-animation:scan 2s infinite;
+.screen{display:none;width:100%;height:100%;padding:20px;text-align:center}
+.active{display:block}
+h1{margin-top:40px}
+button{
+padding:10px 20px;
+border:none;
+border-radius:12px;
+background:#007aff;
+color:white;
+margin:5px;
 }
-
-@keyframes scan{
-0%{opacity:0.3}
-50%{opacity:1}
-100%{opacity:0.3}
-}
-
-</style>
-</head>
-
-<body>
-
-<div id="boot">
-<div class="boot-logo"> Anh Duy OMEGA</div>
-</div>
-
-<div id="lock">
-<div class="status">
-<span id="time"></span>
-<span>📶 📡 🔋<span id="battery">100</span>%</span>
-</div>
-
-<h2>🔒 Nhập mật khẩu</h2>
-<div id="dots">______</div>
-
-<div class="pin-grid" id="pinGrid"></div>
-
-<div id="faceID">Face ID scanning...</div>
-</div>
-
-<script>
-
-/* ===== REAL TIME ===== */
-setInterval(()=>{
-const now=new Date();
-document.getElementById("time").innerText=
-now.getHours()+":"+String(now.getMinutes()).padStart(2,"0");
-},1000);
-
-/* ===== BATTERY FAKE DYNAMIC ===== */
-let battery=100;
-setInterval(()=>{
-battery--;
-if(battery<=1) battery=100;
-document.getElementById("battery").innerText=battery;
-},5000);
-
-/* ===== PIN SYSTEM 888888 ===== */
-const correctPin="888888";
-let input="";
-const dots=document.getElementById("dots");
-const grid=document.getElementById("pinGrid");
-
-for(let i=1;i<=9;i++)createBtn(i);
-createBtn(0);
-
-function createBtn(n){
-const btn=document.createElement("button");
-btn.className="pin-btn";
-btn.innerText=n;
-btn.onclick=()=>{
-if(input.length<6){
-input+=n;
-updateDots();
-if(input.length===6){
-if(input===correctPin){
-unlock();
-}else{
-navigator.vibrate?.(200);
-input="";
-updateDots();
-}
-}
-}
-};
-grid.appendChild(btn);
-}
-
-function updateDots(){
-dots.innerText=input.padEnd(6,"_");
-}
-
-function unlock(){
-document.getElementById("lock").style.transform="scale(1.2)";
-document.getElementById("lock").style.opacity="0";
-setTimeout(()=>{
-document.getElementById("lock").style.display="none";
-},600);
-}
-
-/* ===== RANDOM ANIME BACKGROUND ===== */
-const animeList=[
-"https://images.unsplash.com/photo-1612036781124-847f8939b154",
-"https://images.unsplash.com/photo-1606112219348-204d7d8b94ee",
-"https://images.unsplash.com/photo-1610878180933-3f1f4a6c2c34",
-"https://images.unsplash.com/photo-1608889175123-5a6b1b4e8d14",
-"https://images.unsplash.com/photo-1601758064138-6f7b6b2e3e4c",
-"https://images.unsplash.com/photo-1593642532400-2682810df593",
-"https://images.unsplash.com/photo-1612832021080-0f3a7e3a1f4b",
-"https://images.unsplash.com/photo-1607746882042-944635dfe10e",
-"https://images.unsplash.com/photo-1587614382346-acd8a0f8bde3",
-"https://images.unsplash.com/photo-1610878180933-3f1f4a6c2c34",
-"https://images.unsplash.com/photo-1612036781124-847f8939b154",
-"https://images.unsplash.com/photo-1606112219348-204d7d8b94ee",
-"https://images.unsplash.com/photo-1608889175123-5a6b1b4e8d14",
-"https://images.unsplash.com/photo-1607746882042-944635dfe10e",
-"https://images.unsplash.com/photo-1587614382346-acd8a0f8bde3",
-"https://images.unsplash.com/photo-1593642532400-2682810df593",
-"https://images.unsplash.com/photo-1612832021080-0f3a7e3a1f4b",
-"https://images.unsplash.com/photo-1601758064138-6f7b6b2e3e4c",
-"https://images.unsplash.com/photo-1606112219348-204d7d8b94ee",
-"https://images.unsplash.com/photo-1607746882042-944635dfe10e"
-];
-
-document.getElementById("lock").style.backgroundImage=
-`url(${animeList[Math.floor(Math.random()*animeList.length)]})`;
-
-/* ===== SNOW ENGINE ===== */
-for(let i=0;i<80;i++){
-let snow=document.createElement("div");
-snow.className="snow";
-snow.style.left=Math.random()*100+"vw";
-snow.style.animationDuration=(Math.random()*6+5)+"s";
-document.body.appendChild(snow);
-}
-
-</script>
-
-</body>
-</html><style>
-
-/* ===== HOME SCREEN ===== */
-#home{
-position:fixed;
-inset:0;
-display:none;
-padding-top:40px;
-background:linear-gradient(180deg,#ffffff,#cce7ff);
-color:black;
-transition:0.5s;
-}
-
-.grid{
+.appGrid{
 display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:20px;
-padding:20px;
-text-align:center;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+margin-top:20px;
 }
-
-.app{
-transition:0.2s;
+.appIcon{
+background:white;
+padding:10px;
+border-radius:20px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+cursor:pointer;
 }
-
-.app img{
-width:65px;
-height:65px;
-border-radius:18px;
-box-shadow:0 5px 15px rgba(0,0,0,0.3);
-}
-
-.app span{
+#dynamicIsland{
+position:fixed;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+background:black;
+color:white;
+padding:8px 20px;
+border-radius:30px;
 font-size:12px;
-display:block;
-margin-top:5px;
 }
-
-.app:active{
-transform:scale(0.85);
-}
-
-/* ===== DOCK ===== */
-#dock{
+#backBtn{
 position:fixed;
 bottom:20px;
 left:50%;
 transform:translateX(-50%);
-width:90%;
-background:rgba(255,255,255,0.6);
-backdrop-filter:blur(20px);
-border-radius:25px;
-display:flex;
-justify-content:space-around;
-padding:10px 0;
-}
-
-/* ===== APP SCREEN ===== */
-#appScreen{
-position:fixed;
-inset:0;
-background:white;
 display:none;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-animation:zoomIn 0.3s forwards;
 }
-
-@keyframes zoomIn{
-from{transform:scale(0.7);opacity:0}
-to{transform:scale(1);opacity:1}
-}
-
-.blur-bg{
-filter:blur(10px);
-}
-
-.back-btn{
+img.anime{
+width:150px;
+border-radius:20px;
 margin-top:20px;
-padding:10px 20px;
-background:#007aff;
-color:white;
-border:none;
-border-radius:15px;
 }
-
 </style>
+</head>
+<body>
 
-<div id="home">
-<div class="grid" id="appGrid"></div>
+<div id="rainbowBorder"></div>
+<div id="snow"></div>
+<div id="dynamicIsland">DUY IOS • 100% 🔋</div>
 
-<div id="dock">
-<img src="https://img.icons8.com/ios-filled/50/000000/phone.png" width="40">
-<img src="https://img.icons8.com/ios-filled/50/000000/safari.png" width="40">
-<img src="https://img.icons8.com/ios-filled/50/000000/messages.png" width="40">
-<img src="https://img.icons8.com/ios-filled/50/000000/music.png" width="40">
+<audio id="bgMusic" loop autoplay>
+<source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/Its_time_for_adventure/Komiku_-_12_-_Friends.mp3" type="audio/mpeg">
+</audio>
+
+<div id="lock" class="screen active">
+<h1>🔐 Nhập mật khẩu</h1>
+<input type="password" id="pass" maxlength="6" style="padding:10px;border-radius:10px;border:1px solid #ccc">
+<br><br>
+<button onclick="unlock()">Mở khóa</button>
+<button onclick="faceID()">Face ID</button>
+<p id="lockMsg"></p>
 </div>
+
+<div id="home" class="screen">
+<h1>Hi, I am Anh Duy IOS ✔️</h1>
+<img class="anime" id="animeImg" src="">
+<div class="appGrid" id="apps"></div>
 </div>
 
-<div id="appScreen">
+<div id="appScreen" class="screen">
 <h2 id="appTitle"></h2>
-<p>Ứng dụng đang chạy...</p>
-<button class="back-btn" onclick="closeApp()">Quay lại</button>
+<p id="appContent"></p>
 </div>
 
-<script>
+<button id="backBtn" onclick="goHome()">⬅️ Quay lại</button>
 
-/* ===== UNLOCK TO HOME ===== */
+<script>
+const PASSWORD="888888";
+const apps=document.getElementById("apps");
+const appScreen=document.getElementById("appScreen");
+const home=document.getElementById("home");
+const backBtn=document.getElementById("backBtn");
+
+function vibrate(){ if(navigator.vibrate) navigator.vibrate(50); }
+
 function unlock(){
-document.getElementById("lock").style.display="none";
-document.getElementById("home").style.display="block";
+let val=document.getElementById("pass").value;
+if(val===PASSWORD){
+document.getElementById("lock").classList.remove("active");
+home.classList.add("active");
+randomAnime();
+}else{
+document.getElementById("lockMsg").innerText="Sai mật khẩu!";
+vibrate();
+}
 }
 
-/* ===== 40 APPS ===== */
-const appNames=[
-"Free Fire","PUBG","COD","Liên Quân",
-"MLBB","Asphalt 9","CarX","EA FC",
-"DLS","Minecraft","Roblox","Genshin",
-"Clash R","Clash C","Brawl",
-"Subway","Among Us","Stumble",
-"App Store","Camera",
-"Tin Nhắn","Settings","Gallery","YouTube",
-"Facebook","TikTok","Spotify","Zalo",
-"Messenger","Chrome","Weather","Notes",
-"Calculator","Clock","Maps","Files",
-"Drive","Photos","Music","DUY PRIVATE"
-];
-
-const grid=document.getElementById("appGrid");
-
-appNames.forEach(name=>{
-const div=document.createElement("div");
-div.className="app";
-div.innerHTML=`
-<img src="https://picsum.photos/100?random=${Math.random()}">
-<span>${name}</span>
-`;
-div.onclick=()=>openApp(name);
-grid.appendChild(div);
-});
-
-/* ===== OPEN APP ===== */
-function openApp(name){
-navigator.vibrate?.(100);
-document.getElementById("appTitle").innerText=name;
-document.getElementById("home").classList.add("blur-bg");
-document.getElementById("appScreen").style.display="flex";
-}
-
-/* ===== CLOSE APP ===== */
-function closeApp(){
-document.getElementById("home").classList.remove("blur-bg");
-document.getElementById("appScreen").style.display="none";
-}
-
-</script><style>
-
-/* ===== DUY PRIVATE SPECIAL ===== */
-#duyPrivate{
-position:fixed;
-inset:0;
-display:none;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-background:radial-gradient(circle at center,#001f3f,#000814);
-color:white;
-overflow:hidden;
-animation:fadeIn 0.5s forwards;
-}
-
-@keyframes fadeIn{
-from{opacity:0}
-to{opacity:1}
-}
-
-.glow-text{
-font-size:28px;
-animation:glow 1.5s infinite alternate;
-}
-
-@keyframes glow{
-from{text-shadow:0 0 10px #00f}
-to{text-shadow:0 0 30px #00ffff}
-}
-
-.light{
-position:absolute;
-width:300px;
-height:300px;
-background:radial-gradient(circle,#00ffff55,transparent);
-border-radius:50%;
-animation:rotate 8s linear infinite;
-}
-
-@keyframes rotate{
-from{transform:rotate(0deg)}
-to{transform:rotate(360deg)}
-}
-
-</style>
-
-<div id="duyPrivate">
-<div class="light"></div>
-<h1 class="glow-text">Chào đại ca Duy 👑</h1>
-<p>Đây là không gian VIP tối mật</p>
-<button class="back-btn" onclick="closePrivate()">Quay lại</button>
-</div>
-
-<script>
-
-/* ===== OVERRIDE OPEN APP FOR PRIVATE ===== */
-function openApp(name){
-navigator.vibrate?.(120);
-
-if(name==="DUY PRIVATE"){
-document.getElementById("duyPrivate").style.display="flex";
-return;
-}
-
-document.getElementById("appTitle").innerText=name;
-document.getElementById("home").classList.add("blur-bg");
-document.getElementById("appScreen").style.display="flex";
-}
-
-/* ===== CLOSE PRIVATE ===== */
-function closePrivate(){
-document.getElementById("duyPrivate").style.display="none";
-}
-
-/* ===== FACE ID AUTO UNLOCK EFFECT ===== */
+function faceID(){
+document.getElementById("lockMsg").innerText="Đang quét Face ID...";
 setTimeout(()=>{
-if(document.getElementById("lock").style.display!=="none"){
-document.getElementById("faceID").innerText="Face ID failed - Use Passcode";
+document.getElementById("lock").classList.remove("active");
+home.classList.add("active");
+randomAnime();
+},1000);
 }
-},4000);
 
-/* ===== SMOOTH SYSTEM READY ===== */
-console.log("ANH DUY OMEGA SYSTEM READY ∞");
+function openApp(name){
+vibrate();
+home.classList.remove("active");
+appScreen.classList.add("active");
+backBtn.style.display="block";
+document.getElementById("appTitle").innerText=name;
+document.getElementById("appContent").innerText="Chào mừng đến với "+name;
+}
 
+function goHome(){
+appScreen.classList.remove("active");
+home.classList.add("active");
+backBtn.style.display="none";
+}
+
+for(let i=1;i<=40;i++){
+let div=document.createElement("div");
+div.className="appIcon";
+div.innerText="App "+i;
+div.onclick=()=>openApp("App "+i);
+apps.appendChild(div);
+}
+
+function randomAnime(){
+const images=[
+"https://i.imgur.com/1.jpg",
+"https://i.imgur.com/2.jpg",
+"https://i.imgur.com/3.jpg",
+"https://i.imgur.com/4.jpg",
+"https://i.imgur.com/5.jpg"
+];
+document.getElementById("animeImg").src=
+images[Math.floor(Math.random()*images.length)];
+}
+
+function createSnow(){
+for(let i=0;i<50;i++){
+let snow=document.createElement("div");
+snow.className="snowflake";
+snow.innerText="❄";
+snow.style.left=Math.random()*100+"vw";
+snow.style.animationDuration=5+Math.random()*5+"s";
+snow.style.fontSize=10+Math.random()*20+"px";
+document.getElementById("snow").appendChild(snow);
+}
+}
+createSnow();
 </script>
 
 </body>
