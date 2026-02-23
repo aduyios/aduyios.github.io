@@ -3,151 +3,257 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Duy iOS Pro Max</title>
+<title>Duy OS Ultra</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
 body{
-    height:100vh;
-    overflow:hidden;
-    background:black;
-    color:white;
+height:100vh;
+overflow:hidden;
+color:white;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#000000);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
 }
 
-/* sao rơi */
-canvas{
-    position:absolute;
-    top:0;
-    left:0;
-    z-index:0;
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
 }
 
-/* lock screen */
+.island{
+position:absolute;
+top:15px;
+left:50%;
+transform:translateX(-50%);
+width:120px;
+height:30px;
+background:black;
+border-radius:25px;
+z-index:5;
+}
+
+/* LOCK */
 .lock{
-    position:absolute;
-    width:100%;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    background:rgba(0,0,0,0.8);
-    backdrop-filter:blur(15px);
-    z-index:2;
+position:absolute;
+width:100%;
+height:100%;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,0.7);
+backdrop-filter:blur(10px);
+z-index:4;
+transition:0.4s;
 }
 
-.lock h1{
-    font-size:32px;
-    margin-bottom:20px;
+.time{
+font-size:48px;
+font-weight:600;
 }
 
-.unlock{
-    padding:10px 25px;
-    border-radius:30px;
-    border:none;
-    background:linear-gradient(90deg,#00ffcc,#0066ff);
-    color:white;
-    font-size:16px;
+.date{
+margin-bottom:20px;
+opacity:0.8;
 }
 
-/* main card */
-.card{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    backdrop-filter:blur(20px);
-    background:rgba(255,255,255,0.1);
-    padding:40px;
-    border-radius:25px;
-    text-align:center;
-    width:320px;
-    display:none;
-    z-index:1;
+.pass{
+display:grid;
+grid-template-columns:repeat(3,70px);
+gap:15px;
+margin-top:20px;
 }
 
-.card h2{margin-bottom:10px;}
-.card p{opacity:0.8;margin-bottom:20px;}
-
-.icons a{
-    margin:0 10px;
-    text-decoration:none;
-    color:white;
-    font-size:22px;
+.key{
+width:70px;
+height:70px;
+border-radius:50%;
+background:rgba(255,255,255,0.1);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+backdrop-filter:blur(5px);
+transition:0.2s;
 }
 
-.dynamic{
-    position:absolute;
-    top:20px;
-    left:50%;
-    transform:translateX(-50%);
-    width:120px;
-    height:30px;
-    background:black;
-    border-radius:20px;
-    z-index:3;
+.key:active{
+transform:scale(0.9);
+background:rgba(255,255,255,0.3);
+}
+
+/* HOME */
+.home{
+display:none;
+padding-top:90px;
+text-align:center;
+animation:fade 0.6s ease;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:25px;
+padding:40px;
+}
+
+.app{
+background:rgba(255,255,255,0.1);
+padding:20px;
+border-radius:20px;
+font-size:14px;
+backdrop-filter:blur(10px);
+transition:0.2s;
+}
+
+.app:active{
+transform:scale(0.9);
+}
+
+/* APP SCREEN */
+.screen{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) scale(0);
+width:330px;
+height:520px;
+background:#111;
+border-radius:30px;
+padding:20px;
+transition:0.3s;
+z-index:6;
+overflow:auto;
+}
+
+.close{
+position:absolute;
+top:10px;
+right:15px;
+font-size:18px;
+}
+.notif{
+position:absolute;
+top:60px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,0.8);
+padding:10px 20px;
+border-radius:20px;
+display:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="dynamic"></div>
+<div class="island"></div>
+<div class="notif" id="notif">🔔 Có thông báo mới!</div>
 
-<canvas id="stars"></canvas>
+<div class="lock" id="lock">
+<div class="time" id="time"></div>
+<div class="date" id="date"></div>
 
-<div class="lock" id="lockscreen">
-    <h1>🔐 Face ID</h1>
-    <button class="unlock" onclick="unlock()">Mở khóa</button>
+<h3>Nhập mật khẩu</h3>
+<div class="pass">
+<div class="key" onclick="press(1)">1</div>
+<div class="key" onclick="press(2)">2</div>
+<div class="key" onclick="press(3)">3</div>
+<div class="key" onclick="press(4)">4</div>
+<div class="key" onclick="press(5)">5</div>
+<div class="key" onclick="press(6)">6</div>
+<div class="key" onclick="press(7)">7</div>
+<div class="key" onclick="press(8)">8</div>
+<div class="key" onclick="press(9)">9</div>
+</div>
 </div>
 
-<div class="card" id="main">
-    <h2>Duy đẹp trai 😎</h2>
-    <p>iOS Developer • Hacker • Pro Max 2026</p>
-    <div class="icons">
-        <a href="#">🌐</a>
-        <a href="#">📘</a>
-        <a href="#">🎵</a>
-    </div>
+<div class="home" id="home">
+<h2>Duy OS Ultra</h2>
+<div class="grid">
+<div class="app" onclick="openApp('store')">📦<br>App Store</div>
+<div class="app" onclick="openApp('camera')">📸<br>Camera</div>
+<div class="app" onclick="openApp('msg')">💬<br>Tin nhắn</div>
+</div>
 </div>
 
-<audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<div class="screen" id="store">
+<div class="close" onclick="closeApp()">❌</div>
+<h3>App Store</h3>
+<p>🔥 Game Pro - Miễn phí</p>
+<p>📸 Editor X - Miễn phí</p>
+<p>🎵 Music++ - Miễn phí</p>
+</div>
+
+<div class="screen" id="camera">
+<div class="close" onclick="closeApp()">❌</div>
+<h3>Camera</h3>
+<p>📸 Selfie mode ready 😎</p>
+</div>
+
+<div class="screen" id="msg">
+<div class="close" onclick="closeApp()">❌</div>
+<h3>Tin nhắn</h3>
+<p><b>Mẹ:</b> Con học chưa?</p>
+<p><b>Duy:</b> Con đang build Duy OS 😎</p>
+</div>
 
 <script>
-function unlock(){
-    document.getElementById("lockscreen").style.display="none";
-    document.getElementById("main").style.display="block";
-    document.getElementById("music").play();
+let input="";
+const correct="123456";
+const audio=new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg");
+
+function press(num){
+audio.play();
+input+=num;
+if(input.length===6){
+if(input===correct){
+document.getElementById("lock").style.opacity="0";
+setTimeout(()=>{
+document.getElementById("lock").style.display="none";
+document.getElementById("home").style.display="block";
+showNotif();
+},400);
+}else{
+input="";
+alert("Sai mật khẩu!");
+}
+}
 }
 
-/* sao rơi */
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let stars=[];
-for(let i=0;i<150;i++){
-    stars.push({
-        x:Math.random()*canvas.width,
-        y:Math.random()*canvas.height,
-        r:Math.random()*2
-    });
+function openApp(id){
+document.getElementById(id).style.transform="translate(-50%,-50%) scale(1)";
 }
 
-function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="white";
-    for(let i of stars){
-        ctx.beginPath();
-        ctx.arc(i.x,i.y,i.r,0,Math.PI*2);
-        ctx.fill();
-        i.y+=0.5;
-        if(i.y>canvas.height)i.y=0;
-    }
-    requestAnimationFrame(draw);
+function closeApp(){
+document.querySelectorAll(".screen").forEach(s=>{
+s.style.transform="translate(-50%,-50%) scale(0)";
+});
 }
-draw();
+
+function updateTime(){
+const now=new Date();
+document.getElementById("time").innerHTML=
+now.getHours().toString().padStart(2,"0")+":"+
+now.getMinutes().toString().padStart(2,"0");
+document.getElementById("date").innerHTML=
+"Ngày "+now.getDate()+"/"+(now.getMonth()+1)+"/"+now.getFullYear();
+}
+setInterval(updateTime,1000);
+updateTime();
+
+function showNotif(){
+const n=document.getElementById("notif");
+n.style.display="block";
+setTimeout(()=>{n.style.display="none"},3000);
+}
 </script>
 
 </body>
