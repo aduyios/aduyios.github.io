@@ -4,16 +4,90 @@
   <title>Duy đẹp trai</title>
   <style>
     body {
+      margin: 0;
+      overflow: hidden;
       background: black;
-      color: lime;
+      color: #00ff00;
+      font-family: monospace;
       text-align: center;
-      margin-top: 100px;
-      font-family: Arial;
+    }
+
+    h1 {
+      position: absolute;
+      width: 100%;
+      top: 20%;
+      font-size: 40px;
+      z-index: 2;
+      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+    }
+
+    button {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 25px;
+      font-size: 16px;
+      background: transparent;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    button:hover {
+      background: #00ff00;
+      color: black;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   </style>
 </head>
+
 <body>
   <h1>🔥 Duy đẹp trai số 1 🔥</h1>
-  <p>Website chính thức của Duy</p>
+  <button onclick="alert('Chào mừng đến thế giới của Duy 👑')">ENTER</button>
+
+  <canvas id="matrix"></canvas>
+
+  <script>
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "DUYDEPTRAI010101CADBLOCK";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+
+    const drops = [];
+    for (let x = 0; x < columns; x++)
+      drops[x] = 1;
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#00ff00";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+          drops[i] = 0;
+
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 33);
+  </script>
 </body>
 </html>
