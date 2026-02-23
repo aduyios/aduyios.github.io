@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Duy đẹp trai</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #00ff00;
+      font-family: Arial;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin-top: 120px;
+      font-size: 40px;
+      animation: glow 1s infinite alternate;
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00ff00; }
+      to { text-shadow: 0 0 25px #00ff00, 0 0 40px #00ff00; }
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 10px 25px;
+      font-size: 16px;
+      background: transparent;
+      color: #00ff00;
+      border: 2px solid #00ff00;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #00ff00;
+      color: black;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h1>🔥 Duy đẹp trai số 1 🔥</h1>
+  <p>Website chính thức của Duy</p>
+
+  <button onclick="alert('Chào mừng đến với thế giới của Duy 👑')">
+    ENTER
+  </button>
+</body>
+</html>
