@@ -6,162 +6,148 @@
 <title>Duy iOS</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent;}
-body{overflow:hidden;background:black}
-
-/* LOCK SCREEN */
-#lock{
-position:fixed;
-width:100%;
-height:100%;
-background:linear-gradient(to bottom,#1c1c1e,#000);
-color:white;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+-webkit-tap-highlight-color:transparent;
 }
 
-.lock-title{
-font-size:22px;
-margin-bottom:20px;
-opacity:0.8;
+body{
+overflow-x:hidden;
+background:linear-gradient(to bottom,#dbe7ff,#a9c3f5);
+color:#111;
 }
 
-.dots{
-display:flex;
-gap:15px;
-margin-bottom:30px;
-}
-
-.dot{
-width:15px;
-height:15px;
-border-radius:50%;
-border:2px solid white;
-}
-
-.dot.active{background:white;}
-
-.keypad{
-display:grid;
-grid-template-columns:repeat(3,80px);
-gap:20px;
-justify-content:center;
-}
-
-.key{
-width:80px;
-height:80px;
-border-radius:50%;
-background:rgba(255,255,255,0.15);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:26px;
-}
-
-.key:active{background:rgba(255,255,255,0.3);}
-
-/* MAIN APP */
-#app{
-display:none;
-height:100vh;
-overflow:auto;
-background:linear-gradient(to bottom,#c7d6f2,#8fb0e3);
-color:#1c1c1e;
-}
-
+/* HEADER */
 .header{
 position:sticky;
 top:0;
-background:rgba(120,150,200,0.7);
-backdrop-filter:blur(15px);
-padding:18px;
+background:rgba(130,160,210,0.85);
+backdrop-filter:blur(20px);
+padding:20px;
 display:flex;
 justify-content:space-between;
 align-items:center;
 font-weight:600;
 color:white;
+font-size:20px;
+}
+
+/* PROFILE */
+.profile{
+text-align:center;
+padding:60px 20px 30px;
+}
+
+.avatar{
+width:130px;
+height:130px;
+border-radius:50%;
+background:linear-gradient(145deg,#bcd2ff,#9db8f0);
+margin:0 auto 20px;
+box-shadow:0 15px 35px rgba(0,0,0,0.2);
+}
+
+.name{
+font-size:30px;
+font-weight:700;
+}
+
+.tick{
+background:#2ea0ff;
+color:white;
+font-size:14px;
+padding:4px 8px;
+border-radius:50%;
+margin-left:8px;
+}
+
+.sub{
+margin-top:10px;
+color:#4d5f8f;
 font-size:18px;
 }
 
-.profile{text-align:center;padding:40px 20px;}
-.avatar{
-width:120px;height:120px;border-radius:50%;
-background:url('https://images.alphacoders.com/131/1314071.jpg') center/cover;
-margin:0 auto 15px;
-box-shadow:0 10px 25px rgba(0,0,0,0.25);
-}
-.name{font-size:26px;font-weight:700;}
-.tick{background:#2196f3;color:white;font-size:12px;padding:3px 7px;border-radius:50%;margin-left:6px;}
-.sub{color:#5f6fa3;margin-top:6px;}
-
+/* SECTION */
 .section-title{
-font-size:28px;
-font-weight:700;
+font-size:34px;
+font-weight:800;
 text-align:center;
-margin:30px 0 15px;
+margin:40px 0 20px;
 }
 
+/* ITEM */
 .item{
 display:flex;
 align-items:center;
 justify-content:space-between;
-padding:18px 25px;
+padding:20px 25px;
 margin:0 15px;
 border-bottom:1px solid rgba(0,0,0,0.08);
 }
 
-.left{display:flex;align-items:center;gap:15px;}
-
-.icon{
-width:60px;height:60px;border-radius:18px;
-background:linear-gradient(145deg,#5b8df5,#3d6ed6);
-display:flex;align-items:center;justify-content:center;
-color:white;font-size:22px;
-box-shadow:0 8px 20px rgba(0,0,0,0.2);
+.left{
+display:flex;
+align-items:center;
+gap:18px;
 }
 
-.text-title{font-size:18px;font-weight:600;}
-.text-sub{font-size:13px;color:#5f6fa3;margin-top:4px;}
-.download{font-size:26px;color:#3d6ed6;}
+.icon{
+width:70px;
+height:70px;
+border-radius:22px;
+background:linear-gradient(145deg,#5b8df5,#3d6ed6);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+color:white;
+box-shadow:0 12px 25px rgba(0,0,0,0.2);
+}
+
+.text-title{
+font-size:20px;
+font-weight:700;
+}
+
+.text-sub{
+font-size:14px;
+color:#4d5f8f;
+margin-top:5px;
+}
+
+.download{
+font-size:30px;
+color:#3d6ed6;
+}
+
+/* SNOW */
+.snow{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:999;
+}
+
+.snowflake{
+position:absolute;
+color:white;
+animation:fall linear infinite;
+opacity:0.8;
+}
+
+@keyframes fall{
+to{transform:translateY(110vh)}
+}
 </style>
 </head>
 
 <body>
-
-<!-- LOCK -->
-<div id="lock">
-<div class="lock-title">Nhập mật khẩu</div>
-
-<div class="dots">
-<div class="dot"></div>
-<div class="dot"></div>
-<div class="dot"></div>
-<div class="dot"></div>
-<div class="dot"></div>
-<div class="dot"></div>
-</div>
-
-<div class="keypad">
-<div class="key">1</div>
-<div class="key">2</div>
-<div class="key">3</div>
-<div class="key">4</div>
-<div class="key">5</div>
-<div class="key">6</div>
-<div class="key">7</div>
-<div class="key">8</div>
-<div class="key">9</div>
-<div></div>
-<div class="key">0</div>
-<div class="key">⌫</div>
-</div>
-</div>
-
-<!-- APP -->
-<div id="app">
 
 <div class="header">
 <div>DUY IOS</div>
@@ -176,27 +162,7 @@ box-shadow:0 8px 20px rgba(0,0,0,0.2);
 
 <div class="section-title">Tải Game</div>
 
-<div class="item">
-<div class="left">
-<div class="icon">🎮</div>
-<div>
-<div class="text-title">Battle Arena</div>
-<div class="text-sub">Cập nhật hôm nay</div>
-</div>
-</div>
-<div class="download">⬇️</div>
-</div>
-
-<div class="item">
-<div class="left">
-<div class="icon">⚔️</div>
-<div>
-<div class="text-title">Ninja Hero</div>
-<div class="text-sub">Phiên bản mới</div>
-</div>
-</div>
-<div class="download">⬇️</div>
-</div>
+<div id="gameList"></div>
 
 <div class="section-title">Tải Ứng Dụng</div>
 
@@ -211,39 +177,55 @@ box-shadow:0 8px 20px rgba(0,0,0,0.2);
 <div class="download">⬇️</div>
 </div>
 
-</div>
+<div class="snow" id="snow"></div>
 
 <script>
-let password="888888";
-let input="";
-let dots=document.querySelectorAll(".dot");
+const games=[
+"Battle Arena","Ninja Hero","Shadow Fight","Dragon War",
+"Zombie Rush","Speed Racer","Sniper Elite",
+"Monster Clash","Sky Adventure","Hero Legends",
+"Battle Royale X","Sword Master","Pixel War",
+"Galaxy Attack","Street Fighter Go",
+"Warzone Mobile","Magic Arena",
+"Clash Heroes","Mini World","Block Craft",
+"Racing King","Football Star",
+"Gun Strike","Island Survival",
+"Mythic Quest","Cyber Hunter",
+"Dark Knight","Legend Arena",
+"Super Ninja","Rogue Hero",
+"Space Battle","Final Warrior",
+"Fury Road","Empire War",
+"Storm Arena","Demon Slayer",
+"Arcade King","Survival X",
+"Wild Hunter","Ultimate Arena"
+];
 
-document.querySelectorAll(".key").forEach(key=>{
-key.onclick=()=>{
-let val=key.innerText;
+const container=document.getElementById("gameList");
 
-if(val==="⌫"){
-input=input.slice(0,-1);
-}else{
-if(input.length<6) input+=val;
-}
-
-dots.forEach((d,i)=>{
-d.classList.toggle("active",i<input.length);
+games.forEach(name=>{
+container.innerHTML+=`
+<div class="item">
+<div class="left">
+<div class="icon">🎮</div>
+<div>
+<div class="text-title">${name}</div>
+<div class="text-sub">Cập nhật hôm nay</div>
+</div>
+</div>
+<div class="download">⬇️</div>
+</div>`;
 });
 
-if(input.length===6){
-if(input===password){
-document.getElementById("lock").style.display="none";
-document.getElementById("app").style.display="block";
-document.body.style.overflow="auto";
-}else{
-input="";
-dots.forEach(d=>d.classList.remove("active"));
+/* Snow */
+for(let i=0;i<60;i++){
+let s=document.createElement("div");
+s.className="snowflake";
+s.innerHTML="❄";
+s.style.left=Math.random()*100+"vw";
+s.style.animationDuration=5+Math.random()*5+"s";
+s.style.fontSize=10+Math.random()*20+"px";
+document.getElementById("snow").appendChild(s);
 }
-}
-};
-});
 </script>
 
 </body>
